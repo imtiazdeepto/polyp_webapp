@@ -11,6 +11,69 @@ from PIL import Image
 
 st.set_page_config(page_title="Polyp Segmentation CAD", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(180deg, #f8fbfc 0%, #ffffff 48%, #f4f7f9 100%);
+        color: #1f2a33;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .stApp header {
+        background: rgba(255, 255, 255, 0.88);
+        border-bottom: 1px solid #e6edf2;
+    }
+
+    .stApp .stMarkdown,
+    .stApp p,
+    .stApp label,
+    .stApp span,
+    .stApp h1,
+    .stApp h2,
+    .stApp h3,
+    .stApp h4,
+    .stApp h5,
+    .stApp h6 {
+        color: #1f2a33;
+    }
+
+    [data-testid="stSidebar"] {
+        background: #f8fbfc;
+    }
+
+    div[data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid #e3eaef;
+        border-radius: 14px;
+        padding: 1rem;
+        box-shadow: 0 6px 18px rgba(31, 42, 51, 0.06);
+    }
+
+    div[data-testid="stFileUploader"] {
+        background: #ffffff;
+        border: 1px dashed #b8c8d3;
+        border-radius: 16px;
+        padding: 0.5rem;
+    }
+
+    .result-label {
+        color: #17313f;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-align: center;
+        margin: 0.15rem 0 0.5rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 USE_LOCAL_MODEL = os.environ.get("USE_LOCAL_MODEL", "0").lower() in {"1", "true", "yes"}
 
 
@@ -155,11 +218,21 @@ if st.session_state.last_result:
 
     st.subheader("Visual Results")
     img1, img2, img3, img4, img5 = st.columns(5)
-    img1.image(decode_b64(result["original_image"]), caption="Original", use_container_width=True)
-    img2.image(decode_b64(result["mask_image"]), caption="Mask", use_container_width=True)
-    img3.image(decode_b64(result["overlay_image"]), caption="Overlay", use_container_width=True)
-    img4.image(decode_b64(result["contour_image"]), caption="Contours", use_container_width=True)
-    img5.image(decode_b64(result["bbox_image"]), caption="Bounding Boxes", use_container_width=True)
+    with img1:
+        st.markdown('<div class="result-label">Original</div>', unsafe_allow_html=True)
+        st.image(decode_b64(result["original_image"]), use_column_width=True)
+    with img2:
+        st.markdown('<div class="result-label">Mask</div>', unsafe_allow_html=True)
+        st.image(decode_b64(result["mask_image"]), use_column_width=True)
+    with img3:
+        st.markdown('<div class="result-label">Overlay</div>', unsafe_allow_html=True)
+        st.image(decode_b64(result["overlay_image"]), use_column_width=True)
+    with img4:
+        st.markdown('<div class="result-label">Contours</div>', unsafe_allow_html=True)
+        st.image(decode_b64(result["contour_image"]), use_column_width=True)
+    with img5:
+        st.markdown('<div class="result-label">Bounding Boxes</div>', unsafe_allow_html=True)
+        st.image(decode_b64(result["bbox_image"]), use_column_width=True)
 
     if result.get("bboxes"):
         with st.expander("Bounding box coordinates (JSON)"):
